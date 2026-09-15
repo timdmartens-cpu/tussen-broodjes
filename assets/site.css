@@ -1,0 +1,134 @@
+/* TUSSEN. Deel 1: tokens, basis, kop, hero */
+:root{
+  --canvas:#FBFBF9;
+  --ink:#111111;
+  --blue:#8DA5B5;
+  --slate:#5E6264;
+  --tile:#D8DCDD;
+  --accent:#D9402B;
+  --accent-hover:#C2361F;
+  --accent-muted:rgba(217,64,43,.18);
+  --text-secondary:#56595A;
+  --text-primary:#111111;
+  --gut:clamp(20px,8.334vw,120px);
+  --hdr:94px;
+  --rule:3px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  --display:"Jost",Futura,"Century Gothic",system-ui,sans-serif;
+  --body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-x:hidden;overflow-x:clip;-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--hdr) + 16px)}
+body{margin:0;overflow-x:hidden;overflow-x:clip;background:var(--canvas);color:var(--text-primary);font:400 18px/1.55 var(--body);-webkit-font-smoothing:antialiased;opacity:0;animation:page-in .8s var(--ease) .05s forwards}
+@keyframes page-in{to{opacity:1}}
+img,video,svg{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+h1,h2,h3,p{margin:0}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.skip{position:fixed;left:16px;top:-60px;z-index:100;background:var(--ink);color:var(--canvas);padding:12px 18px;font:500 14px/1 var(--display);text-transform:uppercase;letter-spacing:.06em;text-decoration:none;transition:top .3s var(--ease)}
+.skip:focus{top:16px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+main:focus{outline:none}
+
+/* vaste achtergrondlaag: papierkorrel op fluisterniveau */
+.grain{position:fixed;inset:-50%;z-index:60;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3  0 0 0 0 .28  0 0 0 0 .25  0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");animation:grain-drift 80s linear infinite;animation-delay:-23s}
+@keyframes grain-drift{0%{transform:translate(0,0)}25%{transform:translate(-6%,4%)}50%{transform:translate(-2%,-5%)}75%{transform:translate(5%,-2%)}100%{transform:translate(0,0)}}
+
+/* type */
+.display{font-family:var(--display);font-weight:500;letter-spacing:-.02em;line-height:1.2}
+.label{font:400 15px/1.3 var(--display);text-transform:uppercase;letter-spacing:.09em}
+.link{font:500 18px/1.4 var(--display);text-decoration:none;background:linear-gradient(currentColor,currentColor) 0 100%/100% 1.5px no-repeat;padding-bottom:3px;transition:background-size .45s var(--ease)}
+.link:hover{background-size:0 1.5px;background-position:100% 100%}
+
+/* knoppen, zoals Mendo: zwart blok, of dikke rand */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:52px;padding:0 30px;background:var(--ink);color:var(--canvas);font:600 14px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;text-decoration:none;transition:background-color .35s var(--ease),transform .35s var(--ease)}
+.btn:hover{background:#2a2a2a}
+.btn:active{transform:translateY(1px)}
+.btn--line{background:transparent;color:var(--ink);border:var(--rule) solid var(--ink);height:60px;font-size:17px;font-weight:500}
+.btn--line:hover{background:var(--ink);color:var(--canvas)}
+.btn .arr{transition:transform .35s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+
+/* aankondigingsbalk */
+.announce{background:var(--ink);color:#F4F3EF;height:40px;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 var(--gut);font:400 13px/1 var(--body);text-transform:uppercase;letter-spacing:.04em;text-align:center}
+.announce .dot{width:7px;height:7px;border-radius:50%;background:#8a8a8a;flex:none;position:relative}
+.announce.open .dot{background:var(--accent)}
+.announce.open .dot::after{content:"";position:absolute;inset:-5px;border-radius:50%;background:var(--accent);opacity:0;animation:dot-pulse 3.2s var(--ease) infinite;animation-delay:-1.2s}
+@keyframes dot-pulse{0%{opacity:.45;transform:scale(.4)}70%,100%{opacity:0;transform:scale(1.6)}}
+
+/* kop, met het bovenste sneetje */
+.site-head{position:sticky;top:0;z-index:40;background:var(--canvas);height:var(--hdr)}
+.site-head .inner{position:relative;height:100%;margin:0 var(--gut);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.site-head .inner::after{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--rule);background:var(--ink);transform-origin:left;transform:scaleX(var(--head-rule,1))}
+.burger{width:44px;height:44px;margin-left:-10px;display:grid;place-content:center;gap:5px}
+.burger i{display:block;width:24px;height:2px;background:var(--ink);transition:transform .4s var(--ease),opacity .3s var(--ease)}
+.logo{justify-self:center;position:relative;display:block;font:600 31px/1 var(--display);letter-spacing:.06em;text-decoration:none;color:var(--ink);padding:4px 2px}
+.logo::after{content:"";position:absolute;left:-3px;right:-3px;top:52%;height:2px;background:var(--canvas)}
+.visit{justify-self:end;width:32px;height:32px;margin-right:-4px;border-radius:50%;background:var(--ink);color:var(--canvas);display:grid;place-items:center;text-decoration:none;transition:transform .4s var(--ease)}
+.visit:hover{transform:translateX(3px)}
+.visit svg{width:15px;height:15px}
+
+/* menu, zoals Mendo's zijlade */
+.drawer{position:fixed;inset:0;z-index:80;visibility:hidden;transition:visibility 0s linear .5s}
+.drawer.open{visibility:visible;transition:none}
+.drawer .veil{position:absolute;inset:0;background:rgba(17,17,17,.28);opacity:0;transition:opacity .5s var(--ease)}
+.drawer.open .veil{opacity:1}
+.drawer .panel{position:absolute;left:0;top:0;bottom:0;width:min(440px,88vw);background:var(--canvas);border-right:var(--rule) solid var(--ink);padding:26px var(--gut) 40px calc(var(--gut) - 10px);transform:translateX(-102%);transition:transform .55s var(--ease-out);display:flex;flex-direction:column}
+.drawer.open .panel{transform:none}
+.drawer .close{width:44px;height:44px;display:grid;place-items:center;margin-bottom:40px}
+.drawer nav a{display:block;font:500 clamp(30px,3.2vw,42px)/1.25 var(--display);letter-spacing:-.01em;text-decoration:none;padding:6px 0;opacity:0;transform:translateX(-14px);transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.drawer.open nav a{opacity:1;transform:none}
+.drawer.open nav a:nth-child(2){transition-delay:.06s}
+.drawer.open nav a:nth-child(3){transition-delay:.12s}
+.drawer.open nav a:nth-child(4){transition-delay:.18s}
+.drawer nav a:hover{color:var(--slate)}
+.drawer .fine{margin-top:auto;font:400 15px/1.5 var(--body);color:var(--text-secondary)}
+
+/* HERO: Mendo's gesplitste hero, video in een staand kader */
+.hero{position:relative;height:600vh}
+.stage{position:sticky;top:var(--hdr);height:calc(100vh - var(--hdr));margin:0 var(--gut);display:grid;grid-template-columns:1fr 1fr;align-items:center;column-gap:clamp(24px,4vw,60px)}
+.bands{position:relative;height:100%;grid-column:1}
+.band{position:absolute;left:0;right:0;bottom:21%;opacity:0;will-change:opacity}
+.band .sm{font:500 clamp(20px,1.95vw,28px)/1.3 var(--display);letter-spacing:-.005em;margin-bottom:clamp(22px,3.4vh,40px);opacity:calc(.15 + .85*var(--k,0));transform:translateY(calc((1 - var(--k,0))*10px))}
+.band .big{font:500 clamp(36px,4.05vw,58px)/1.2 var(--display);letter-spacing:-.02em;max-width:14ch;position:relative;text-wrap:balance}
+.band .big .w{display:inline-block;white-space:nowrap}
+.band .row{margin-top:clamp(28px,4.6vh,50px);display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.band .sub{font:400 19px/1.55 var(--body);color:var(--text-secondary);max-width:34ch;margin-top:22px}
+
+/* band 1: blur-to-sharp, de macro trekt scherp */
+.b1 .big .soft,.b1 .big .sharp{display:block}
+.b1 .big .soft{position:absolute;inset:0;filter:blur(10px);opacity:calc(1 - var(--k,0))}
+.b1 .big .sharp{opacity:var(--k,0)}
+/* band 2: drift-down, de camera zakt */
+.b2 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*2.8,1);opacity:var(--kc);transform:translateY(calc((1 - var(--kc))*-26px))}
+/* band 3: stapelen, elk woord valt neer als een laag en veert in */
+.b3 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*3.2,1);--ks:clamp(0,(var(--k,0) - var(--th,0) - .2)*3.4,1);opacity:var(--kc);transform-origin:50% 100%;transform:translateY(calc((1 - var(--kc))*-44px)) scaleY(calc(1 - .16*var(--kc)*(1 - var(--ks)))) scaleX(calc(1 + .07*var(--kc)*(1 - var(--ks))))}
+/* band 4: woord voor woord omhoog, dan de sub, dan de knoppen */
+.b4 .w{--kc:clamp(0,(var(--k,0) - var(--th,0))*3,1);opacity:var(--kc);transform:translateY(calc((1 - var(--kc))*.5em))}
+.b4 .sub{--ks:clamp(0,(var(--k,0) - .62)*4,1);opacity:var(--ks);transform:translateY(calc((1 - var(--ks))*12px))}
+.b4 .row{--kb:clamp(0,(var(--k,0) - .76)*5,1);opacity:var(--kb);transform:translateY(calc((1 - var(--kb))*12px))}
+
+/* het kader rechts */
+.frame-wrap{grid-column:2;justify-self:end;position:relative;height:min(calc(100% - 64px),calc((50vw - var(--gut)) * 1.3333));aspect-ratio:3/4}
+.frame{position:absolute;inset:0;overflow:hidden;background:var(--blue)}
+.frame .poster{position:absolute;inset:0;background:center/cover no-repeat}
+.frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s var(--ease);will-change:transform;transform:translateZ(0)}
+.stage.video-ready .frame video{opacity:1}
+.frame .fail-end{position:absolute;inset:0;background:center/cover no-repeat;opacity:0;transition:opacity .9s var(--ease)}
+.stage.video-failed .frame video{display:none}
+.stage.video-failed.at-end .frame .fail-end{opacity:1}
+.frame .still{display:none;width:100%;height:100%;object-fit:cover}
+.ring{position:absolute;right:16px;bottom:16px;width:40px;height:40px;color:rgba(251,251,249,.9);transform:rotate(-90deg);transition:opacity .6s var(--ease)}
+.ring circle.track{stroke:rgba(17,17,17,.18)}
+.stage.video-ready .ring{opacity:0}
+.cue{position:absolute;right:16px;bottom:16px;width:40px;height:40px;border-radius:50%;background:var(--canvas);display:grid;place-items:center;animation:cue-bob 2.8s var(--ease) infinite;animation-delay:-.6s}
+@keyframes cue-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+
+/* het kleine vierkant dat over het kader valt, zoals bij Mendo */
+.overlap{position:absolute;left:-26%;bottom:4%;width:36%;aspect-ratio:1;overflow:hidden;background:var(--accent);transform:translateY(var(--ov,0px));will-change:transform;box-shadow:0 1px 0 rgba(17,17,17,.04)}
+.overlap img{width:100%;height:100%;object-fit:cover}
+
+/* de statische hero: standaard verborgen, de gates zetten hem aan (deel 2) */
+.static-copy{display:none}
