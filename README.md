@@ -9,7 +9,7 @@ Dubbelklik `Start TUSSEN.command` in de map erboven, of start een server in deze
 
     python3 -m http.server 8791
 
-Open daarna http://localhost:8791 in je browser.
+Open daarna https://timdmartens-cpu.github.io/tussen-broodjes/#langs in je browser.
 Dubbelklikken op `index.html` werkt ook, maar dan zie je een stilstaand beeld in plaats van de scrollvideo.
 
 ## Wat staat waar
